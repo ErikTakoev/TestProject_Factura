@@ -1,7 +1,6 @@
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using System.Linq;
 
 namespace TestProject_Factura
 {
@@ -11,15 +10,14 @@ namespace TestProject_Factura
         private readonly EnemyConfig _enemyConfig;
         
         [Inject]
-        public EnemyFactory(IObjectResolver container, EnemyConfig enemyConfig)
+        public EnemyFactory(EnemyConfig enemyConfig)
         {
-            var prefabReferences = container.Resolve<PrefabReference[]>();
-            _enemyPrefab = prefabReferences.FirstOrDefault(x => x.Key == "EnemyPrefab")?.Prefab;
             _enemyConfig = enemyConfig;
+            _enemyPrefab = _enemyConfig.enemyPrefab;
             
             if (_enemyPrefab == null)
             {
-                Debug.LogError("EnemyFactory: Не вдалося знайти префаб ворога за ключем 'EnemyPrefab'");
+                Debug.LogError("EnemyFactory: Префаб ворога не налаштовано в EnemyConfig");
             }
         }
         

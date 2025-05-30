@@ -1,23 +1,23 @@
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using System.Linq;
 
 namespace TestProject_Factura
 {
     public class BulletFactory
     {
         private readonly GameObject _bulletPrefab;
+        private readonly GameConfig _gameConfig;
         
         [Inject]
-        public BulletFactory(IObjectResolver container)
+        public BulletFactory(GameConfig gameConfig)
         {
-            var prefabReferences = container.Resolve<PrefabReference[]>();
-            _bulletPrefab = prefabReferences.FirstOrDefault(x => x.Key == "BulletPrefab")?.Prefab;
+            _gameConfig = gameConfig;
+            _bulletPrefab = _gameConfig.bulletPrefab;
             
             if (_bulletPrefab == null)
             {
-                Debug.LogError("BulletFactory: Не вдалося знайти префаб куль за ключем 'BulletPrefab'");
+                Debug.LogError("BulletFactory: Префаб куль не налаштовано в GameConfig");
             }
         }
         

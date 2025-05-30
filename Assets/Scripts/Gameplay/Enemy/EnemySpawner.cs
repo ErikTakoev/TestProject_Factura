@@ -7,11 +7,10 @@ namespace TestProject_Factura
 {
     public class EnemySpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject enemyPrefab;
-        [SerializeField] private Transform levelParent;
         [SerializeField] private float spawnInterval = 2f; // Інтервал між спавном ворогів
         
         private GameConfig gameConfig;
+        private EnemyConfig enemyConfig;
         private ObjectPool<EnemyController> enemyPool;
         private Transform carTransform;
         private bool isSpawning = false;
@@ -21,9 +20,10 @@ namespace TestProject_Factura
         private IObjectResolver container;
         
         [Inject]
-        private void Construct(GameConfig config, IObjectResolver resolver)
+        private void Construct(GameConfig config, EnemyConfig enemyConfig, IObjectResolver resolver)
         {
             gameConfig = config;
+            this.enemyConfig = enemyConfig;
             container = resolver;
         }
         
@@ -111,16 +111,16 @@ namespace TestProject_Factura
         
         private void InitializeObjectPool()
         {
-            if (enemyPrefab == null)
+            if (enemyConfig.enemyPrefab == null)
             {
-                Debug.LogError("Enemy prefab is not assigned!");
+                Debug.LogError("Enemy prefab is not assigned in EnemyConfig!");
                 return;
             }
             
-            EnemyController enemyComponent = enemyPrefab.GetComponent<EnemyController>();
+            EnemyController enemyComponent = enemyConfig.enemyPrefab.GetComponent<EnemyController>();
             if (enemyComponent == null)
             {
-                Debug.LogError("Enemy prefab does not have EnemyController component!");
+                Debug.LogError("Enemy prefab in EnemyConfig does not have EnemyController component!");
                 return;
             }
             

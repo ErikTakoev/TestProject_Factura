@@ -6,6 +6,9 @@ namespace TestProject_Factura
     [CreateAssetMenu(fileName = "GameConfig", menuName = "Game/GameConfig")]
     public class GameConfig : ScriptableObject
     {
+        [Header("Prefabs")]
+        public GameObject bulletPrefab;
+        
         [Header("Level")]
         public float levelLength = 200f;
         public int enemyCount = 20;

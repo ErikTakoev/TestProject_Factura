@@ -11,11 +11,6 @@ namespace TestProject_Factura
         [SerializeField] private EnemyConfig enemyConfig;
         [SerializeField] private GameConfig gameConfig;
         
-        [Header("Prefabs")]
-        [SerializeField] private GameObject carPrefab;
-        [SerializeField] private GameObject enemyPrefab;
-        [SerializeField] private GameObject bulletPrefab;
-        
         [Header("Components")]
         [SerializeField] private InputManager inputManager;
         
@@ -29,24 +24,11 @@ namespace TestProject_Factura
             // Реєстрація компонентів сцени
             builder.RegisterComponent(inputManager).AsSelf();
             
-            // Реєстрація контролерів
-            builder.RegisterComponentInHierarchy<CarController>().As<ICarController>();
-            builder.RegisterComponentInHierarchy<TurretController>().As<ITurretController>();
-            builder.RegisterComponentInHierarchy<CameraController>().As<ICameraController>();
-            builder.RegisterComponentInHierarchy<GameManager>().As<IGameManager>();
-            builder.RegisterComponentInHierarchy<InputHandler>().AsSelf();
-            builder.RegisterComponentInHierarchy<EnemySpawner>().AsSelf();
-            builder.RegisterComponentInHierarchy<UIManager>().AsSelf();
-            builder.RegisterComponentInHierarchy<DependencyTest>().AsSelf();
-            
             // Для EnemyController використовуємо системний метод VContainer для ін'єкції у створені об'єкти
             builder.RegisterEntryPointExceptionHandler(ex => Debug.LogError($"VContainer Error: {ex.Message}"));
             
             // Реєстрація фабрик і сервісів
             RegisterFactories(builder);
-            
-            // Реєстрація префабів
-            RegisterPrefabs(builder);
             
             // Реєстрація систем і контролерів
             RegisterGameSystems(builder);
@@ -63,19 +45,6 @@ namespace TestProject_Factura
             builder.Register<EnemyFactory>(Lifetime.Singleton);
         }
         
-        private void RegisterPrefabs(IContainerBuilder builder)
-        {
-            // Реєстрація префабів з ключами
-            builder.RegisterInstance(carPrefab).AsSelf();
-            builder.RegisterInstance(enemyPrefab).AsSelf();
-            builder.RegisterInstance(bulletPrefab).AsSelf();
-            
-            // Зберігаємо посилання на префаби як синглтони з конкретними типами
-            builder.RegisterInstance(new PrefabReference(carPrefab, "CarPrefab")).AsSelf();
-            builder.RegisterInstance(new PrefabReference(enemyPrefab, "EnemyPrefab")).AsSelf();
-            builder.RegisterInstance(new PrefabReference(bulletPrefab, "BulletPrefab")).AsSelf();
-        }
-        
         private void RegisterGameSystems(IContainerBuilder builder)
         {
             // Реєструємо ігрові системи
@@ -83,6 +52,7 @@ namespace TestProject_Factura
             builder.RegisterComponentInHierarchy<EnemySpawner>().AsSelf();
             builder.RegisterComponentInHierarchy<InputHandler>().AsSelf();
             builder.RegisterComponentInHierarchy<LevelManager>().AsSelf();
+            builder.RegisterComponentInHierarchy<DependencyTest>().AsSelf();
         }
         
         private void RegisterControllers(IContainerBuilder builder)
@@ -108,19 +78,6 @@ namespace TestProject_Factura
             // Приклад реєстрації:
             // builder.Register<ObjectPool<Bullet>>(Lifetime.Singleton);
             // builder.Register<ObjectPool<EnemyController>>(Lifetime.Singleton);
-        }
-    }
-    
-    // Клас-обгортка для префабів
-    public class PrefabReference
-    {
-        public GameObject Prefab { get; }
-        public string Key { get; }
-        
-        public PrefabReference(GameObject prefab, string key)
-        {
-            Prefab = prefab;
-            Key = key;
         }
     }
 } 

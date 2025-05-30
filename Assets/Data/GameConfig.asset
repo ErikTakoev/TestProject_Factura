@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca779a0cd9a94745b938a4a8a1362d4, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  levelLength: 200
+  levelLength: 50
   enemyCount: 20
   enemySpawnRangeX: {x: -10, y: 10}
   bulletSpeed: 20

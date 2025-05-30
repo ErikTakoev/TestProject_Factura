@@ -6,6 +6,9 @@ namespace TestProject_Factura
     [CreateAssetMenu(fileName = "EnemyConfig", menuName = "Game/EnemyConfig")]
     public class EnemyConfig : ScriptableObject
     {
+        [Header("Prefab")]
+        public GameObject enemyPrefab;
+        
         [Header("Health")]
         public float maxHP = 30f;
         

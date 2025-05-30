@@ -6,6 +6,9 @@ namespace TestProject_Factura
     [CreateAssetMenu(fileName = "CarConfig", menuName = "Game/CarConfig")]
     public class CarConfig : ScriptableObject
     {
+        [Header("Prefab")]
+        public GameObject carPrefab;
+        
         [Header("Movement")]
         public float moveSpeed = 10f;
         
