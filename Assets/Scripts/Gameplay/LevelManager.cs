@@ -9,6 +9,7 @@ namespace TestProject_Factura
         [SerializeField] private Transform groundPrefab;
         [SerializeField] private int groundTilesCount = 3;
         [SerializeField] private float groundTileLength = 100f;
+        [SerializeField] private float removeTileDistance = 100f;
         
         private Transform[] groundTiles;
         private Transform carTransform;
@@ -36,7 +37,7 @@ namespace TestProject_Factura
             InitializeGroundTiles();
             
             // Встановлюємо поріг для переміщення тайлу
-            resetThreshold = groundTileLength * 0.5f;
+            resetThreshold = groundTileLength * 0.6f;
         }
         
         private void Update()

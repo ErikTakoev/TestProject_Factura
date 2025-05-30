@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fd7d722df8c24d4a9a49cc9a205edcc, type: 3}
   m_Name: CarConfig
   m_EditorClassIdentifier: 
-  moveSpeed: 20
+  carPrefab: {fileID: 0}
+  moveSpeed: 15
   maxHP: 100
   acceleration: 5

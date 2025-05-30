@@ -10,7 +10,6 @@ namespace TestProject_Factura
     public class EnemyController : MonoBehaviour, IEnemyController
     {
         [SerializeField] private Animator animator;
-        [SerializeField] private NavMeshAgent navAgent;
         [SerializeField] private float deathEffectDuration = 1.5f;
         [SerializeField] private ParticleSystem hitEffect;
         [SerializeField] private ParticleSystem deathEffect;
@@ -42,11 +41,6 @@ namespace TestProject_Factura
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
-            
-            if (navAgent == null)
-            {
-                navAgent = GetComponent<NavMeshAgent>();
-            }
             
             if (animator == null)
             {
@@ -97,12 +91,6 @@ namespace TestProject_Factura
             currentHP = config.maxHP;
             isActive = true;
             
-            // Активуємо компоненти
-            if (navAgent != null)
-            {
-                navAgent.enabled = true;
-                navAgent.isStopped = true;
-            }
             
             if (rb != null)
             {
@@ -150,11 +138,6 @@ namespace TestProject_Factura
                 currentState = null;
             }
             
-            // Відключаємо компоненти
-            if (navAgent != null)
-            {
-                navAgent.enabled = false;
-            }
             
             if (rb != null)
             {

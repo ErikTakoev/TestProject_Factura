@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e69473b58ebb48948b16b84c65840cac, type: 3}
   m_Name: EnemyConfig
   m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 5346625044048538799, guid: ab41815ab82d3d6458de866f6c099be5, type: 3}
   maxHP: 30
   chaseSpeed: 8
   detectionRange: 15

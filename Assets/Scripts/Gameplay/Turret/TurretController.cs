@@ -11,25 +11,29 @@ namespace TestProject_Factura
         [Header("Rotation")]
         [SerializeField] private Transform turretPivot;
         [SerializeField] private float rotationSpeed = 100f;
-        [SerializeField] private Vector2 rotationLimits = new Vector2(-90f, 90f);
         
         [Header("Shooting")]
         [SerializeField] private Transform shootPoint;
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private ParticleSystem muzzleFlash;
         [SerializeField] private AudioSource shootSound;
+        [SerializeField] private Transform parentForBullets;
         
         private Camera mainCamera;
         private GameConfig gameConfig;
         private ObjectPool<Bullet> bulletPool;
         private float lastShootTime;
         
+        // Ссилка на InputManager
+        private InputManager inputManager;
+        
         public bool CanShoot => Time.time - lastShootTime >= gameConfig.shootCooldown;
         
         [Inject]
-        private void Construct(GameConfig config, IObjectResolver resolver)
+        private void Construct(GameConfig config, IObjectResolver resolver, InputManager inputMgr)
         {
             gameConfig = config;
+            inputManager = inputMgr;
             
             // Ініціалізуємо пул куль за допомогою Resolve
             if (bulletPrefab != null)
@@ -37,7 +41,7 @@ namespace TestProject_Factura
                 Bullet bulletComponent = bulletPrefab.GetComponent<Bullet>();
                 if (bulletComponent != null)
                 {
-                    bulletPool = new ObjectPool<Bullet>(bulletComponent, transform, 10, resolver);
+                    bulletPool = new ObjectPool<Bullet>(bulletComponent, parentForBullets, 10, resolver);
                 }
                 else
                 {
@@ -57,29 +61,26 @@ namespace TestProject_Factura
         
         public void UpdateRotation(Vector2 inputPosition)
         {
-            if (turretPivot == null || mainCamera == null)
+            if (turretPivot == null)
                 return;
-                
-            // Отримуємо позицію у світових координатах з вхідного вектора
-            Vector3 worldPos = GetWorldPointFromInput(inputPosition);
+
+            // Використовуємо InputManager для отримання світової позиції
+            Vector3 worldPos = inputManager.GetWorldPosition();
             
-            // Обчислюємо напрямок від турелі до цієї позиції (тільки в горизонтальній площині XZ)
+            // Обчислюємо напрямок від турелі до цієї позиції
             Vector3 direction = worldPos - turretPivot.position;
-            direction.y = 0; // Обмежуємо обертання тільки по горизонталі
+            direction.y = 0;
             
             if (direction.magnitude < 0.1f)
                 return;
-                
-            // Розраховуємо цільове обертання
+            
+            // Розраховуємо цільове обертання для осі Y
             Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
             
-            // Обмежуємо кут обертання, якщо необхідно
-            float currentAngle = ClampRotationAngle(targetRotation.eulerAngles.y);
-            
             // Плавно обертаємо турель до цільової орієнтації
-            turretPivot.rotation = Quaternion.RotateTowards(
-                turretPivot.rotation,
-                Quaternion.Euler(0, currentAngle, 0),
+            turretPivot.rotation = Quaternion.Slerp(
+                turretPivot.rotation, 
+                targetRotation, 
                 rotationSpeed * Time.deltaTime
             );
         }
@@ -108,34 +109,20 @@ namespace TestProject_Factura
             if (bullet != null)
             {
                 bullet.transform.position = shootPoint.position;
-                bullet.transform.rotation = shootPoint.rotation;
-                bullet.Initialize(shootPoint.forward, gameConfig.bulletSpeed, gameConfig.bulletDamage, bulletPool);
+                
+                // Встановлюємо напрямок кулі у горизонтальній площині
+                Vector3 bulletDirection = turretPivot.forward;
+                bulletDirection.y = 0; // Обмежуємо рух тільки в горизонтальній площині
+                bulletDirection = bulletDirection.normalized; // Нормалізуємо вектор
+                
+                // Встановлюємо обертання кулі відповідно до напрямку
+                bullet.transform.rotation = Quaternion.LookRotation(bulletDirection);
+                
+                // Ініціалізуємо кулю з правильним напрямком
+                bullet.Initialize(bulletDirection, gameConfig.bulletSpeed, gameConfig.bulletDamage, bulletPool);
             }
             
             await UniTask.Yield();
-        }
-        
-        private Vector3 GetWorldPointFromInput(Vector2 screenPoint)
-        {
-            Ray ray = mainCamera.ScreenPointToRay(screenPoint);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-            
-            if (groundPlane.Raycast(ray, out float distance))
-            {
-                return ray.GetPoint(distance);
-            }
-            
-            return Vector3.zero;
-        }
-        
-        private float ClampRotationAngle(float angle)
-        {
-            // Нормалізуємо кут до діапазону [0, 360)
-            if (angle > 180)
-                angle -= 360;
-                
-            // Обмежуємо кут між мінімальним і максимальним значеннями
-            return Mathf.Clamp(angle, rotationLimits.x, rotationLimits.y);
         }
     }
 } 

@@ -6,9 +6,7 @@ using VContainer;
 namespace TestProject_Factura
 {
     public class EnemySpawner : MonoBehaviour
-    {
-        [SerializeField] private float spawnInterval = 2f; // Інтервал між спавном ворогів
-        
+    {   
         private GameConfig gameConfig;
         private EnemyConfig enemyConfig;
         private ObjectPool<EnemyController> enemyPool;
@@ -47,7 +45,7 @@ namespace TestProject_Factura
                 return;
                 
             // Спавнимо ворогів з інтервалом
-            if (Time.time - lastSpawnTime > spawnInterval && spawnedEnemies < gameConfig.enemyCount)
+            if (Time.time - lastSpawnTime > gameConfig.spawnInterval && spawnedEnemies < gameConfig.enemyCount)
             {
                 SpawnEnemy();
                 lastSpawnTime = Time.time;
@@ -93,7 +91,7 @@ namespace TestProject_Factura
             if (enemy != null)
             {
                 // Генеруємо випадкову позицію для спавну
-                Vector3 spawnPosition = GetRandomSpawnPosition(carTransform.position.z + UnityEngine.Random.Range(10f, 30f));
+                Vector3 spawnPosition = GetRandomSpawnPosition(carTransform.position.z + UnityEngine.Random.Range(gameConfig.enemySpawnRangeY.x, gameConfig.enemySpawnRangeY.y));
                 
                 // Ініціалізуємо ворога
                 enemy.Initialize(spawnPosition);

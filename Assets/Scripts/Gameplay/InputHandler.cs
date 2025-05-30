@@ -9,18 +9,15 @@ namespace TestProject_Factura
     {
         private ITurretController turretController;
         private ICameraController cameraController;
-        private IGameManager gameManager;
         private InputManager inputManager;
         
         private bool isGameStarted = false;
         
         [Inject]
-        private void Construct(ITurretController turret, ICameraController camera, 
-                              IGameManager game, InputManager input)
+        private void Construct(ITurretController turret, ICameraController camera, InputManager input)
         {
             turretController = turret;
             cameraController = camera;
-            gameManager = game;
             inputManager = input;
         }
         
