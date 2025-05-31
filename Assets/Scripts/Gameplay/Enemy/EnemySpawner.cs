@@ -93,8 +93,8 @@ namespace TestProject_Factura
                 // Генеруємо випадкову позицію для спавну
                 Vector3 spawnPosition = GetRandomSpawnPosition(carTransform.position.z + UnityEngine.Random.Range(gameConfig.enemySpawnRangeY.x, gameConfig.enemySpawnRangeY.y));
                 
-                // Ініціалізуємо ворога
-                enemy.Initialize(spawnPosition);
+                // Ініціалізуємо ворога, передаючи посилання на пул
+                enemy.Initialize(spawnPosition, enemyPool);
                 enemy.SetTarget(carTransform);
                 
                 spawnedEnemies++;

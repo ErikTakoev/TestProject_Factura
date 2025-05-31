@@ -25,6 +25,9 @@ namespace TestProject_Factura
         private Transform target;
         private bool isActive = false;
         
+        // Пул об'єктів
+        private ObjectPool<EnemyController> pool;
+        
         // State Machine
         private Dictionary<EnemyStateType, IEnemyState> states;
         private IEnemyState currentState;
@@ -63,7 +66,7 @@ namespace TestProject_Factura
 
             if (transform.position.z - target.position.z < sendToPoolIfBackward)
             {
-                gameObject.SetActive(false);
+                ReturnToPool();
                 return;
             }
                 
@@ -93,12 +96,17 @@ namespace TestProject_Factura
             currentState.Enter();
         }
         
-        public void Initialize(Vector3 spawnPosition)
+        public void Initialize(Vector3 spawnPosition, ObjectPool<EnemyController> objectPool = null)
         {
             transform.position = spawnPosition;
             currentHP = config.maxHP;
             isActive = true;
             
+            // Встановлюємо посилання на пул
+            if (objectPool != null)
+            {
+                pool = objectPool;
+            }
             
             if (rb != null)
             {
@@ -110,6 +118,12 @@ namespace TestProject_Factura
             
             gameObject.SetActive(true);
             InitializeStateMachine();
+        }
+        
+        // Метод для встановлення посилання на пул об'єктів
+        public void SetPool(ObjectPool<EnemyController> objectPool)
+        {
+            pool = objectPool;
         }
         
         public void SetTarget(Transform newTarget)
@@ -198,8 +212,22 @@ namespace TestProject_Factura
             // Сповіщаємо про вбивство ворога
             GameEvents.EnemyKilled(1);
             
-            // Вимикаємо об'єкт
-            gameObject.SetActive(false);
+            // Повертаємо об'єкт в пул замість простої деактивації
+            ReturnToPool();
+        }
+        
+        // Метод для повернення об'єкта до пулу
+        private void ReturnToPool()
+        {
+            if (pool != null)
+            {
+                pool.Return(this);
+            }
+            else
+            {
+                // Якщо пул не встановлено, просто деактивуємо об'єкт
+                gameObject.SetActive(false);
+            }
         }
         
         public void SetAnimation(string animationName)

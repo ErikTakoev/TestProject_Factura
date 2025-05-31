@@ -6,7 +6,7 @@ namespace TestProject_Factura
 {
     public interface IEnemyController
     {
-        void Initialize(Vector3 spawnPosition);
+        void Initialize(Vector3 spawnPosition, ObjectPool<EnemyController> objectPool = null);
         void SetTarget(Transform target);
         UniTask TakeDamage(float damage);
     }
