@@ -931,13 +931,13 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.87994736, b: 0.6773585, a: 1}
-  m_Intensity: 1.96
+  m_Intensity: 0.05
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: 3
     m_CustomResolution: -1
     m_Strength: 0.506
@@ -2354,10 +2354,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 7145620235182540473, guid: d6d83a80ac9414343ba4110d9864595f, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 7262097335325120287, guid: d6d83a80ac9414343ba4110d9864595f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

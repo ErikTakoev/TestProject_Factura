@@ -1,6 +1,6 @@
 using System;
-using UnityEngine;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace TestProject_Factura
 {
@@ -9,21 +9,21 @@ namespace TestProject_Factura
         [SerializeField] private Rigidbody rb;
         [SerializeField] private TrailRenderer trail;
         [SerializeField] private ParticleSystem hitEffect;
-        
+
         private float damage;
         private float lifetime = 1f;
         private float lifeTimer;
         private ObjectPool<Bullet> pool;
-        
+
         public void Initialize(Vector3 direction, float speed, float bulletDamage, ObjectPool<Bullet> bulletPool)
         {
             // Зберігаємо посилання на пул
             pool = bulletPool;
-            
+
             // Встановлюємо параметри кулі
             damage = bulletDamage;
             lifeTimer = 0f;
-            
+
             // Скидаємо фізику кулі
             if (rb != null)
             {
@@ -31,23 +31,23 @@ namespace TestProject_Factura
                 rb.velocity = Vector3.zero;
                 rb.AddForce(direction.normalized * speed, ForceMode.VelocityChange);
             }
-            
+
             // Скидаємо трейл, якщо він є
             if (trail != null)
             {
                 trail.Clear();
                 trail.enabled = true;
             }
-            
+
             // Активуємо об'єкт
             gameObject.SetActive(true);
         }
-        
+
         private void OnEnable()
         {
             lifeTimer = 0f;
         }
-        
+
         private void Update()
         {
             // Відстежуємо час життя кулі
@@ -57,7 +57,7 @@ namespace TestProject_Factura
                 ReturnToPool();
             }
         }
-        
+
         private void OnTriggerEnter(Collider other)
         {
             // Перевіряємо, чи зіткнулися з ворогом
@@ -66,16 +66,16 @@ namespace TestProject_Factura
             {
                 // Наносимо шкоду ворогу
                 enemy.TakeDamage(damage).Forget();
-                
+
                 // Відтворюємо ефект влучання
                 PlayHitEffect();
-                
+
                 // Повертаємо кулю в пул
                 ReturnToPool();
                 return;
             }
         }
-        
+
         private void PlayHitEffect()
         {
             if (hitEffect != null)
@@ -83,12 +83,12 @@ namespace TestProject_Factura
                 // Від'єднуємо ефект від кулі та відтворюємо його
                 hitEffect.transform.parent = null;
                 hitEffect.Play();
-                
+
                 // Знищуємо ефект через деякий час
                 Destroy(hitEffect.gameObject, hitEffect.main.duration);
             }
         }
-        
+
         private void ReturnToPool()
         {
             // Вимикаємо трейл, щоб він не відображався при повторному використанні кулі
@@ -96,7 +96,7 @@ namespace TestProject_Factura
             {
                 trail.enabled = false;
             }
-            
+
             // Зупиняємо рух кулі
             if (rb != null)
             {
@@ -104,7 +104,7 @@ namespace TestProject_Factura
                 rb.angularVelocity = Vector3.zero;
                 rb.isKinematic = true;
             }
-            
+
             // Повертаємо кулю в пул
             if (pool != null)
             {
@@ -112,4 +112,4 @@ namespace TestProject_Factura
             }
         }
     }
-} 
+}
