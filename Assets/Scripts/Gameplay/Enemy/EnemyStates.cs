@@ -10,6 +10,7 @@ namespace TestProject_Factura
     {
         void Enter();
         void Update();
+        void FixedUpdate();
         void Exit();
     }
     
@@ -25,6 +26,7 @@ namespace TestProject_Factura
         
         public virtual void Enter() { }
         public virtual void Update() { }
+        public virtual void FixedUpdate() { }
         public virtual void Exit() { }
     }
     
@@ -86,25 +88,8 @@ namespace TestProject_Factura
                 return;
             }
             
-            // Поворот до цілі
+            // Поворот до цілі - це можна залишити в Update
             enemy.LookAtTarget();
-            
-            // Рух до цілі
-            if (rb != null && !rb.isKinematic)
-            {
-                // Отримуємо напрямок до цілі
-                Vector3 direction = (enemy.Target.position - enemy.transform.position).normalized;
-                
-                // Ігноруємо Y-координату для руху на площині
-                direction.y = 0;
-                
-                // Встановлюємо швидкість через AddForce для більшої стабільності
-                Vector3 targetVelocity = new Vector3(direction.x, rb.velocity.y, direction.z) * (enemy.Config.chaseSpeed / 10f);
-                Vector3 velocityChange = targetVelocity - rb.velocity;
-                velocityChange.y = 0; // Не змінюємо вертикальну швидкість
-                
-                rb.AddForce(velocityChange, ForceMode.VelocityChange);
-            }
             
             // Перевіряємо відстань до цілі
             float distance = enemy.DistanceToTarget;
@@ -117,6 +102,24 @@ namespace TestProject_Factura
             {
                 enemy.ChangeState(EnemyStateType.Idle);
             }
+        }
+        
+        public override void FixedUpdate()
+        {
+            if (enemy.Target == null || rb == null || rb.isKinematic)
+                return;
+                // Отримуємо напрямок до цілі
+                Vector3 direction = (enemy.Target.position - enemy.transform.position).normalized;
+                
+                // Ігноруємо Y-координату для руху на площині
+                direction.y = 0;
+                
+                // Встановлюємо швидкість через AddForce для більшої стабільності
+                Vector3 targetVelocity = new Vector3(direction.x, rb.velocity.y, direction.z) * (enemy.Config.chaseSpeed / 10f);
+                Vector3 velocityChange = targetVelocity - rb.velocity;
+                velocityChange.y = 0; // Не змінюємо вертикальну швидкість
+                
+                rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
         
         public override void Exit()
@@ -175,6 +178,15 @@ namespace TestProject_Factura
             if (Time.time - lastAttackTime >= enemy.Config.attackCooldown)
             {
                 Attack();
+            }
+        }
+        
+        public override void FixedUpdate()
+        {
+            // Переконуємося, що ворог залишається на місці під час атаки
+            if (rb != null && !rb.isKinematic && rb.velocity.magnitude > 0.1f)
+            {
+                rb.velocity = Vector3.zero;
             }
         }
         

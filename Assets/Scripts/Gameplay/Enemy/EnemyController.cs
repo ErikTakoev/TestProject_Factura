@@ -70,7 +70,16 @@ namespace TestProject_Factura
                 return;
             }
                 
+            // Викликаємо Update стану для нефізичних операцій
             currentState.Update();
+        }
+        
+        private void FixedUpdate()
+        {
+            if (!isActive || currentState == null)
+                return;
+
+            currentState.FixedUpdate(); 
         }
         
         private void InitializeStateMachine()
@@ -112,8 +121,6 @@ namespace TestProject_Factura
             {
                 rb.isKinematic = false;
                 rb.velocity = Vector3.zero;
-                // Встановлюємо обмеження на обертання для запобігання падіння
-                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
             
             gameObject.SetActive(true);

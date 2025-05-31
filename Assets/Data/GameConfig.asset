@@ -17,7 +17,7 @@ MonoBehaviour:
   enemyCount: 1000
   bulletSpeed: 100
   bulletDamage: 25
-  shootCooldown: 0.15
+  shootCooldown: 0.02
   spawnInterval: 0.02
   enemySpawnRangeX: {x: -10, y: 10}
   enemySpawnRangeY: {x: 100, y: 200}

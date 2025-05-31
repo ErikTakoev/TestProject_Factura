@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carPrefab: {fileID: 0}
   moveSpeed: 15
-  maxHP: 100
+  maxHP: 300
   acceleration: 5
+  steeringFactor: 5
+  returnSpeed: 2
