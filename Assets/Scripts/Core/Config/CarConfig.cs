@@ -17,5 +17,11 @@ namespace TestProject_Factura
         
         [Header("Physics")]
         public float acceleration = 5f;
+        
+        [Header("Steering")]
+        [Tooltip("Coefficient that determines how sharply the car turns based on its X position")]
+        public float steeringFactor = 5f;
+        [Tooltip("Speed at which the car returns to the center path")]
+        public float returnSpeed = 2f;
     }
 } 

@@ -64,9 +64,13 @@ namespace TestProject_Factura
         {
             if (IsMoving && rb != null)
             {
+                // Отримуємо поточну позицію по X
+                var posX = transform.position.x;
                 
-                //var posX = transform.position.x;
-                //transform.localEulerAngles = new Vector3(0, -posX, 0);
+                // Корегуємо поворот автомобіля, щоб він повертався до центру шляху (X = 0)
+                float steeringAngle = -posX * config.steeringFactor;
+                Quaternion targetRotation = Quaternion.Euler(0, steeringAngle, 0);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * config.returnSpeed);
                 
                 // Рухаємо автомобіль вперед з постійною швидкістю
                 rb.velocity = Vector3.MoveTowards(rb.velocity, transform.forward * config.moveSpeed, Time.fixedDeltaTime * config.moveSpeed);
