@@ -59,21 +59,21 @@ namespace TestProject_Factura
     // Стан переслідування
     public class ChaseState : EnemyStateBase
     {
-        private NavMeshAgent navAgent;
+        private Rigidbody rb;
         
         public ChaseState(EnemyController enemy) : base(enemy)
         {
-            navAgent = enemy.GetComponent<NavMeshAgent>();
+            rb = enemy.GetComponent<Rigidbody>();
         }
         
         public override void Enter()
         {
             enemy.SetAnimation("Run");
             
-            if (navAgent != null)
+            // Переконуємося, що Rigidbody не кінематичний перед встановленням швидкості
+            if (rb != null && rb.isKinematic)
             {
-                navAgent.isStopped = false;
-                navAgent.speed = enemy.Config.chaseSpeed;
+                rb.isKinematic = false;
             }
         }
         
@@ -85,10 +85,24 @@ namespace TestProject_Factura
                 return;
             }
             
-            // Оновлюємо цільову позицію для переслідування
-            if (navAgent != null && navAgent.isActiveAndEnabled)
+            // Поворот до цілі
+            enemy.LookAtTarget();
+            
+            // Рух до цілі
+            if (rb != null && !rb.isKinematic)
             {
-                navAgent.SetDestination(enemy.Target.position);
+                // Отримуємо напрямок до цілі
+                Vector3 direction = (enemy.Target.position - enemy.transform.position).normalized;
+                
+                // Ігноруємо Y-координату для руху на площині
+                direction.y = 0;
+                
+                // Встановлюємо швидкість через AddForce для більшої стабільності
+                Vector3 targetVelocity = new Vector3(direction.x, rb.velocity.y, direction.z) * (enemy.Config.chaseSpeed / 10f);
+                Vector3 velocityChange = targetVelocity - rb.velocity;
+                velocityChange.y = 0; // Не змінюємо вертикальну швидкість
+                
+                rb.AddForce(velocityChange, ForceMode.VelocityChange);
             }
             
             // Перевіряємо відстань до цілі
@@ -106,9 +120,9 @@ namespace TestProject_Factura
         
         public override void Exit()
         {
-            if (navAgent != null)
+            if (rb != null && !rb.isKinematic)
             {
-                navAgent.isStopped = true;
+                rb.velocity = Vector3.zero;
             }
         }
     }
@@ -117,12 +131,24 @@ namespace TestProject_Factura
     public class AttackState : EnemyStateBase
     {
         private float lastAttackTime;
+        private Rigidbody rb;
         
-        public AttackState(EnemyController enemy) : base(enemy) { }
+        public AttackState(EnemyController enemy) : base(enemy) 
+        {
+            rb = enemy.GetComponent<Rigidbody>();
+        }
         
         public override void Enter()
         {
+            // Зупиняємо рух
+            if (rb != null && !rb.isKinematic)
+            {
+                rb.velocity = Vector3.zero;
+            }
+            
             enemy.SetAnimation("Attack");
+            // Переконуємося, що ворог дивиться на ціль перед атакою
+            enemy.LookAtTarget();
             Attack();
         }
         
@@ -133,6 +159,9 @@ namespace TestProject_Factura
                 enemy.ChangeState(EnemyStateType.Idle);
                 return;
             }
+            
+            // Продовжуємо дивитися на ціль під час атаки
+            enemy.LookAtTarget();
             
             float distance = enemy.DistanceToTarget;
             

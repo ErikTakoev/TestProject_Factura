@@ -11,7 +11,7 @@ namespace TestProject_Factura
         [SerializeField] private ParticleSystem hitEffect;
         
         private float damage;
-        private float lifetime = 5f;
+        private float lifetime = 1f;
         private float lifeTimer;
         private ObjectPool<Bullet> pool;
         
@@ -27,9 +27,8 @@ namespace TestProject_Factura
             // Скидаємо фізику кулі
             if (rb != null)
             {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
                 rb.isKinematic = false;
+                rb.velocity = Vector3.zero;
                 rb.AddForce(direction.normalized * speed, ForceMode.VelocityChange);
             }
             
@@ -75,16 +74,6 @@ namespace TestProject_Factura
                 ReturnToPool();
                 return;
             }
-            
-            // Перевіряємо, чи зіткнулися з перешкодою (має тег "Obstacle")
-            if (other.CompareTag("Obstacle"))
-            {
-                // Відтворюємо ефект влучання
-                PlayHitEffect();
-                
-                // Повертаємо кулю в пул
-                ReturnToPool();
-            }
         }
         
         private void PlayHitEffect()
@@ -120,11 +109,6 @@ namespace TestProject_Factura
             if (pool != null)
             {
                 pool.Return(this);
-            }
-            else
-            {
-                // Якщо пул не встановлено, просто вимикаємо об'єкт
-                gameObject.SetActive(false);
             }
         }
     }

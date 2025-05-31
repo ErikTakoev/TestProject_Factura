@@ -1617,7 +1617,6 @@ MonoBehaviour:
   groundPrefab: {fileID: 7405338503270894623, guid: fe6915f8f05e48a41b61a5a4426e7a14, type: 3}
   groundTilesCount: 3
   groundTileLength: 105
-  removeTileDistance: 100
 --- !u!1 &1514319486
 GameObject:
   m_ObjectHideFlags: 0

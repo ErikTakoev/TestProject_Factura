@@ -64,22 +64,26 @@ namespace TestProject_Factura
         {
             if (IsMoving && rb != null)
             {
+                
+                //var posX = transform.position.x;
+                //transform.localEulerAngles = new Vector3(0, -posX, 0);
+                
                 // Рухаємо автомобіль вперед з постійною швидкістю
-                rb.velocity = transform.forward * config.moveSpeed;
+                rb.velocity = Vector3.MoveTowards(rb.velocity, transform.forward * config.moveSpeed, Time.fixedDeltaTime * config.moveSpeed);
             }
         }
-        
+
         public async UniTask StartMoving()
         {
             if (IsMoving || rb == null)
                 return;
-                
+
             IsMoving = true;
-            
+
             // Плавно прискорюємо автомобіль
             float currentSpeed = 0f;
             float accelerationTime = 0f;
-            
+
             while (currentSpeed < config.moveSpeed && accelerationTime < 1f)
             {
                 accelerationTime += Time.deltaTime;
@@ -87,7 +91,7 @@ namespace TestProject_Factura
                 rb.velocity = transform.forward * currentSpeed;
                 await UniTask.Yield();
             }
-            
+
             // Встановлюємо кінцеву швидкість
             rb.velocity = transform.forward * config.moveSpeed;
         }
@@ -117,12 +121,6 @@ namespace TestProject_Factura
                 
             IsMoving = false;
             rb.velocity = Vector3.zero;
-        }
-        
-        private void OnCollisionEnter(Collision collision)
-        {
-            // Обробка зіткнень з іншими об'єктами
-            // Буде реалізовано пізніше
         }
     }
 } 

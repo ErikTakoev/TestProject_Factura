@@ -13,6 +13,8 @@ namespace TestProject_Factura
         [SerializeField] private float deathEffectDuration = 1.5f;
         [SerializeField] private ParticleSystem hitEffect;
         [SerializeField] private ParticleSystem deathEffect;
+        [SerializeField] private float rotationSpeed = 5f; // Швидкість обертання до цілі
+        [SerializeField] private float sendToPoolIfBackward = -12f;
         
         // Компоненти
         private Rigidbody rb;
@@ -58,6 +60,12 @@ namespace TestProject_Factura
         {
             if (!isActive || currentState == null)
                 return;
+
+            if (transform.position.z - target.position.z < sendToPoolIfBackward)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
                 
             currentState.Update();
         }
@@ -96,15 +104,40 @@ namespace TestProject_Factura
             {
                 rb.isKinematic = false;
                 rb.velocity = Vector3.zero;
+                // Встановлюємо обмеження на обертання для запобігання падіння
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             }
             
             gameObject.SetActive(true);
-            ChangeState(EnemyStateType.Idle);
+            InitializeStateMachine();
         }
         
         public void SetTarget(Transform newTarget)
         {
             target = newTarget;
+        }
+        
+        // Метод для повороту ворога в напрямку цілі
+        public void LookAtTarget()
+        {
+            if (target == null)
+                return;
+                
+            // Отримуємо напрямок до цілі
+            Vector3 direction = (target.position - transform.position).normalized;
+            
+            // Ігноруємо Y-компонент для обертання тільки по горизонталі
+            direction.y = 0;
+            
+            // Перевіряємо, що вектор не нульовий (щоб уникнути помилок)
+            if (direction != Vector3.zero)
+            {
+                // Створюємо кватерніон повороту до цілі
+                Quaternion lookRotation = Quaternion.LookRotation(direction);
+                
+                // Плавно повертаємося до цілі
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+            }
         }
         
         public async UniTask TakeDamage(float damage)
@@ -141,6 +174,12 @@ namespace TestProject_Factura
             
             if (rb != null)
             {
+                // Спочатку зупиняємо рух
+                if (!rb.isKinematic)
+                {
+                    rb.velocity = Vector3.zero;
+                }
+                // Потім переключаємо в кінематичний режим
                 rb.isKinematic = true;
             }
             
@@ -169,11 +208,6 @@ namespace TestProject_Factura
             {
                 animator.SetTrigger(animationName);
             }
-        }
-        
-        private void OnTriggerEnter(Collider other)
-        {
-            // Логіка для виявлення зіткнень з кулями буде реалізована пізніше
         }
     }
 } 

@@ -9,7 +9,6 @@ namespace TestProject_Factura
         [SerializeField] private Transform groundPrefab;
         [SerializeField] private int groundTilesCount = 3;
         [SerializeField] private float groundTileLength = 100f;
-        [SerializeField] private float removeTileDistance = 100f;
         
         private Transform[] groundTiles;
         private Transform carTransform;
