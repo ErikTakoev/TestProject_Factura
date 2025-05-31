@@ -100,17 +100,28 @@ namespace TestProject_Factura
             rb.velocity = transform.forward * config.moveSpeed;
         }
         
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, Vector3 attackerPosition, float pushForce)
         {
             if (damage <= 0)
                 return;
                 
             currentHP = Mathf.Max(0, currentHP - damage);
             
-            // Сповіщаємо UI про оновлення HP
+            // Apply push force to the car
+            if (rb != null && pushForce > 0)
+            {
+                // Calculate push direction (from attacker to car)
+                Vector3 pushDirection = (transform.position - attackerPosition).normalized;
+                // Ensure push is horizontal
+                pushDirection.y = 0;
+                // Apply force
+                rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
+            }
+            
+            // Notify UI about HP update
             GameEvents.CarHPChanged(currentHP);
             
-            // Якщо HP стало нуль, то сповіщаємо про знищення автомобіля
+            // If HP is zero, notify about car destruction
             if (currentHP <= 0)
             {
                 Stop();

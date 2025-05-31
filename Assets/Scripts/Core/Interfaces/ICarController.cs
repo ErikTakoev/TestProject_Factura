@@ -10,7 +10,7 @@ namespace TestProject_Factura
         float CurrentHP { get; }
         bool IsMoving { get; }
         UniTask StartMoving();
-        void TakeDamage(float damage);
+        void TakeDamage(float damage, Vector3 attackerPosition, float pushForce);
         void Stop();
     }
 } 

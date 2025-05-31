@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using Cysharp.Threading.Tasks;
 
 namespace TestProject_Factura
 {
@@ -147,8 +148,6 @@ namespace TestProject_Factura
             }
             
             enemy.SetAnimation("Attack");
-            // Переконуємося, що ворог дивиться на ціль перед атакою
-            enemy.LookAtTarget();
             Attack();
         }
         
@@ -183,12 +182,31 @@ namespace TestProject_Factura
         {
             lastAttackTime = Time.time;
             
-            // Наносимо шкоду автомобілю
-            var car = enemy.Target.GetComponent<ICarController>();
-            if (car != null)
+            // Start attack animation
+            enemy.SetAnimation("Attack");
+            
+            // Apply damage after delay using UniTask
+            ApplyDamageAfterDelay(0.2f).Forget();
+        }
+        
+        private async UniTaskVoid ApplyDamageAfterDelay(float delay)
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(delay));
+            
+            // Check if target is still valid and within range
+            if (enemy.Target != null)
             {
-                car.TakeDamage(enemy.Config.attackDamage);
-                enemy.SetAnimation("Attack"); // Запускаємо анімацію атаки
+                float currentDistance = enemy.DistanceToTarget;
+                
+                // Apply damage only if within double the attack range
+                if (currentDistance <= enemy.Config.attackRange * 2)
+                {
+                    var car = enemy.Target.GetComponent<ICarController>();
+                    if (car != null)
+                    {
+                        car.TakeDamage(enemy.Config.attackDamage, enemy.transform.position, enemy.Config.pushForce);
+                    }
+                }
             }
         }
     }

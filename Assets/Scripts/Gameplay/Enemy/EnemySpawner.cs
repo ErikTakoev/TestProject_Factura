@@ -76,7 +76,7 @@ namespace TestProject_Factura
             // Якщо всі вороги знищені, відправляємо подію про перемогу
             if (enemiesRemaining <= 0)
             {
-                // GameEvents.LevelCompleted();
+                GameEvents.LevelCompleted();
             }
         }
         

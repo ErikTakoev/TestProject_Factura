@@ -125,7 +125,7 @@ namespace TestProject_Factura
                 testResult = $"Applying damage: {testDamageAmount}. Current HP: {currentHP}, Expected after: {expectedHP}";
                 
                 // Apply damage
-                carController.TakeDamage(testDamageAmount);
+                carController.TakeDamage(testDamageAmount, Vector3.zero, 0f);
                 
                 // Wait a short time for event processing
                 yield return new WaitForSeconds(0.1f);
@@ -160,7 +160,7 @@ namespace TestProject_Factura
                 
                 // Calculate damage needed to kill
                 float damageNeeded = currentHP;
-                carController.TakeDamage(damageNeeded);
+                carController.TakeDamage(damageNeeded, Vector3.zero, 0f);
                 
                 // Wait a short time for event processing
                 yield return new WaitForSeconds(0.1f);

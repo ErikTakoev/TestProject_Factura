@@ -20,5 +20,6 @@ namespace TestProject_Factura
         [Header("Combat")]
         public float attackDamage = 10f;
         public float attackCooldown = 1f;
+        public float pushForce = 5f;
     }
 } 
