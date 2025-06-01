@@ -7,6 +7,5 @@ namespace TestProject_Factura
     public interface ICameraController
     {
         UniTask SwitchToFollowMode(Transform target);
-        UniTask SwitchToStaticMode();
     }
-} 
+}

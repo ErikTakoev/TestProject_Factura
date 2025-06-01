@@ -7,8 +7,6 @@ namespace TestProject_Factura
 {
     public class GameManager : MonoBehaviour, IGameManager
     {
-        [SerializeField] private bool endlessMode = true;
-
         private GameState currentState = GameState.Menu;
         private GameConfig gameConfig;
         private ICarController carController;
@@ -17,7 +15,6 @@ namespace TestProject_Factura
         private InputHandler inputHandler;
 
         private float levelStartZ;
-        private int enemiesKilled = 0;
 
         public GameState CurrentState => currentState;
 
@@ -42,7 +39,6 @@ namespace TestProject_Factura
 
             // Підписуємося на події
             GameEvents.OnCarDestroyed += OnCarDestroyed;
-            GameEvents.OnEnemyKilled += OnEnemyKilled;
 
             // Початковий стан гри
             ChangeState(GameState.Menu);
@@ -52,7 +48,6 @@ namespace TestProject_Factura
         {
             // Відписуємося від подій
             GameEvents.OnCarDestroyed -= OnCarDestroyed;
-            GameEvents.OnEnemyKilled -= OnEnemyKilled;
         }
 
         private void Update()
@@ -74,9 +69,6 @@ namespace TestProject_Factura
         {
             if (currentState == GameState.Playing)
                 return;
-
-            // Скидаємо лічильник вбитих ворогів
-            enemiesKilled = 0;
 
             // Змінюємо стан на "гра"
             ChangeState(GameState.Playing);
@@ -114,6 +106,8 @@ namespace TestProject_Factura
 
         public void GameOver(bool isWin)
         {
+            GameEvents.OnCarDestroyed -= OnCarDestroyed;
+
             // Зупиняємо автомобіль
             if (carController != null && carController.IsMoving)
             {
@@ -141,17 +135,6 @@ namespace TestProject_Factura
         private void OnCarDestroyed()
         {
             GameOver(false); // Поразка
-        }
-
-        private void OnEnemyKilled(int count)
-        {
-            enemiesKilled += count;
-
-            // Якщо всі вороги знищені, вважаємо це перемогою
-            if (enemiesKilled >= gameConfig.enemyCount && !endlessMode)
-            {
-                GameOver(true); // Перемога
-            }
         }
     }
 }
