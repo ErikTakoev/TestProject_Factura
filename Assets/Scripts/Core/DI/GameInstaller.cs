@@ -10,6 +10,7 @@ namespace TestProject_Factura
         [SerializeField] private CarConfig carConfig;
         [SerializeField] private EnemyConfig enemyConfig;
         [SerializeField] private GameConfig gameConfig;
+        [SerializeField] private BulletConfig bulletConfig;
 
         [Header("Components")]
         [SerializeField] private InputManager inputManager;
@@ -20,6 +21,7 @@ namespace TestProject_Factura
             builder.RegisterInstance(carConfig).AsSelf();
             builder.RegisterInstance(enemyConfig).AsSelf();
             builder.RegisterInstance(gameConfig).AsSelf();
+            builder.RegisterInstance(bulletConfig).AsSelf();
 
             // Реєстрація компонентів сцени
             builder.RegisterComponent(inputManager).AsSelf();
@@ -69,10 +71,10 @@ namespace TestProject_Factura
             // Реєструємо UI-компоненти
             builder.RegisterComponentInHierarchy<UIManager>().AsSelf();
         }
-        
+
         private void RegisterTest(IContainerBuilder builder)
         {
             builder.RegisterComponentInHierarchy<DependencyTest>().AsSelf();
         }
     }
-} 
+}

@@ -11,7 +11,7 @@ namespace TestProject_Factura
         [SerializeField] private ParticleSystem hitEffect;
 
         private float damage;
-        private float lifetime = 0.4f;
+        private float lifetime = 0.5f;
         private float lifeTimer;
         private ObjectPool<Bullet> pool;
 

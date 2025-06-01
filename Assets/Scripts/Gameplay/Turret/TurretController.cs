@@ -22,19 +22,19 @@ namespace TestProject_Factura
         private int bulletCount;
 
         private Camera mainCamera;
-        private GameConfig gameConfig;
+        private BulletConfig bulletConfig;
         private ObjectPool<Bullet> bulletPool;
         private float lastShootTime;
 
         // Ссилка на InputManager
         private InputManager inputManager;
 
-        public bool CanShoot => Time.time - lastShootTime >= gameConfig.shootCooldown;
+        public bool CanShoot => Time.time - lastShootTime >= bulletConfig.shootCooldown;
 
         [Inject]
-        private void Construct(GameConfig config, IObjectResolver resolver, InputManager inputMgr)
+        private void Construct(BulletConfig config, IObjectResolver resolver, InputManager inputMgr)
         {
-            gameConfig = config;
+            bulletConfig = config;
             inputManager = inputMgr;
 
             bulletCount = config.bulletCount;
@@ -125,7 +125,7 @@ namespace TestProject_Factura
                 bullet.transform.rotation = Quaternion.LookRotation(bulletDirection);
 
                 // Ініціалізуємо кулю з правильним напрямком
-                bullet.Initialize(bulletDirection, gameConfig.bulletSpeed, gameConfig.bulletDamage, bulletPool);
+                bullet.Initialize(bulletDirection, bulletConfig.bulletSpeed, bulletConfig.bulletDamage, bulletPool);
             }
 
             await UniTask.Yield();

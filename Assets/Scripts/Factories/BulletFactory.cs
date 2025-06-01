@@ -6,30 +6,30 @@ namespace TestProject_Factura
 {
     public class BulletFactory
     {
-        private readonly GameObject _bulletPrefab;
-        private readonly GameConfig _gameConfig;
-        
+        private readonly GameObject bulletPrefab;
+        private readonly BulletConfig bulletConfig;
+
         [Inject]
-        public BulletFactory(GameConfig gameConfig)
+        public BulletFactory(BulletConfig bulletConfig)
         {
-            _gameConfig = gameConfig;
-            _bulletPrefab = _gameConfig.bulletPrefab;
-            
-            if (_bulletPrefab == null)
+            this.bulletConfig = bulletConfig;
+            bulletPrefab = this.bulletConfig.bulletPrefab;
+
+            if (bulletPrefab == null)
             {
-                Debug.LogError("BulletFactory: Префаб куль не налаштовано в GameConfig");
+                Debug.LogError("BulletFactory: Префаб куль не налаштовано в BulletConfig");
             }
         }
-        
+
         public GameObject CreateBullet(Vector3 position, Quaternion rotation)
         {
-            if (_bulletPrefab == null)
+            if (bulletPrefab == null)
             {
                 Debug.LogError("BulletFactory: Префаб куль не знайдено");
                 return null;
             }
-            
-            return Object.Instantiate(_bulletPrefab, position, rotation);
+
+            return Object.Instantiate(bulletPrefab, position, rotation);
         }
     }
-} 
+}

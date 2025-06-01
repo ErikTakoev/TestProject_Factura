@@ -6,19 +6,10 @@ namespace TestProject_Factura
     [CreateAssetMenu(fileName = "GameConfig", menuName = "Game/GameConfig")]
     public class GameConfig : ScriptableObject
     {
-        [Header("Prefabs")]
-        public GameObject bulletPrefab;
 
         [Header("Level")]
         public float levelLength = 200f;
         public int enemyCount = 20;
-
-        [Header("Shooting")]
-        public float bulletSpeed = 20f;
-        public float bulletDamage = 25f;
-        public float bulletLifetime = 0.4f;
-        public int bulletCount = 10000;
-        public float shootCooldown = 0.3f;
 
         [Header("Enemy Spawn")]
         public float spawnInterval = 2f;
