@@ -17,10 +17,6 @@ namespace TestProject_Factura
         [SerializeField] private float rotationSpeed = 5f; // Швидкість обертання до цілі
         [SerializeField] private float sendToPoolIfBackward = -12f;
 
-        // Store original particle system settings
-        private ParticleSystem.MainModule originalDeathEffectMain;
-        private bool particleSystemsInitialized = false;
-
         // Компоненти
         private Rigidbody rb;
 
@@ -55,13 +51,6 @@ namespace TestProject_Factura
             if (animator == null)
             {
                 animator = GetComponent<Animator>();
-            }
-
-            // Store original particle system settings
-            if (deathEffect != null && !particleSystemsInitialized)
-            {
-                originalDeathEffectMain = deathEffect.main;
-                particleSystemsInitialized = true;
             }
         }
 
@@ -122,14 +111,9 @@ namespace TestProject_Factura
         {
             if (deathEffect != null)
             {
-                // Stop any ongoing particle effects
-                deathEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-
                 // Reset main module properties
                 var main = deathEffect.main;
-                main.gravityModifier = originalDeathEffectMain.gravityModifier;
-
-                // Reset any other modified properties as needed
+                main.gravityModifier = 0;
             }
         }
 
@@ -274,10 +258,6 @@ namespace TestProject_Factura
             }
 
             deathEffect.SetParticles(particles, count);
-
-
-
-
 
             // Чекаємо завершення анімації смерті
             await UniTask.Delay(TimeSpan.FromSeconds(deathEffectDuration));
