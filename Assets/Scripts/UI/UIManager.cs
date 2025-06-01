@@ -22,7 +22,8 @@ namespace TestProject_Factura
         [SerializeField] private CarHealthUI carHealthUI;
 
         [Header("Buttons")]
-        [SerializeField] private Button restartButton;
+        [SerializeField] private Button restartInLoseWindowButton;
+        [SerializeField] private Button restartInWinWindowButton;
         [SerializeField] private Button startButton;
 
         private IGameManager gameManager;
@@ -64,9 +65,14 @@ namespace TestProject_Factura
                 startButton.onClick.AddListener(() => gameManager.StartGame().Forget());
             }
 
-            if (restartButton != null)
+            if (restartInLoseWindowButton != null)
             {
-                restartButton.onClick.AddListener(() => gameManager.RestartGame());
+                restartInLoseWindowButton.onClick.AddListener(() => gameManager.RestartGame());
+            }
+
+            if (restartInWinWindowButton != null)
+            {
+                restartInWinWindowButton.onClick.AddListener(() => gameManager.RestartGame());
             }
         }
 

@@ -8,7 +8,6 @@ namespace TestProject_Factura
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] private TrailRenderer trail;
-        [SerializeField] private ParticleSystem hitEffect;
 
         private float damage;
         private float lifetime = 0.5f;
@@ -79,25 +78,9 @@ namespace TestProject_Factura
                 // Наносимо шкоду ворогу
                 enemy.TakeDamage(damage).Forget();
 
-                // Відтворюємо ефект влучання
-                PlayHitEffect();
-
                 // Повертаємо кулю в пул
                 ReturnToPool();
                 return;
-            }
-        }
-
-        private void PlayHitEffect()
-        {
-            if (hitEffect != null)
-            {
-                // Від'єднуємо ефект від кулі та відтворюємо його
-                hitEffect.transform.parent = null;
-                hitEffect.Play();
-
-                // Знищуємо ефект через деякий час
-                Destroy(hitEffect.gameObject, hitEffect.main.duration);
             }
         }
 

@@ -181,6 +181,7 @@ namespace TestProject_Factura
 
         public async UniTask TakeDamage(float damage)
         {
+            GameStatistics.IncrementUniTaskCreated();
             if (damage <= 0 || !isActive)
                 return;
 
@@ -242,6 +243,8 @@ namespace TestProject_Factura
             );
 
 
+
+            GameStatistics.IncrementParticlesCreated();
             deathEffect.Simulate(1.5f, true, true, true);
             deathEffect.Play();
             await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
@@ -263,6 +266,7 @@ namespace TestProject_Factura
             await UniTask.Delay(TimeSpan.FromSeconds(deathEffectDuration));
 
             // Сповіщаємо про вбивство ворога
+            GameStatistics.IncrementEnemiesKilled();
             GameEvents.EnemyKilled(1);
 
             // Повертаємо об'єкт в пул замість простої деактивації

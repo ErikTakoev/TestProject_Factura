@@ -93,6 +93,7 @@ namespace TestProject_Factura
 
         public async UniTask Shoot()
         {
+            GameStatistics.IncrementUniTaskCreated();
             if (!CanShoot || shootPoint == null || bulletPool == null)
                 return;
 
@@ -106,6 +107,8 @@ namespace TestProject_Factura
             if (bullet != null)
             {
                 bulletCount--;
+                GameStatistics.IncrementBulletsFired();
+                GameStatistics.IncrementParticlesCreated();
                 GameEvents.BulletCountChanged(bulletCount);
 
                 turretLight.SetActive(true);

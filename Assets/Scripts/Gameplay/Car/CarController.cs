@@ -8,21 +8,21 @@ namespace TestProject_Factura
     public class CarController : MonoBehaviour, ICarController
     {
         [SerializeField] private Rigidbody rb;
-        
+
         private CarConfig config;
         private float currentHP;
         private Vector3 initialPosition;
-        
+
         public Transform Transform => transform;
         public float CurrentHP => currentHP;
         public bool IsMoving { get; private set; }
-        
+
         [Inject]
         private void Construct(CarConfig carConfig)
         {
             config = carConfig;
         }
-        
+
         private void Awake()
         {
             // Перевіряємо, чи є компонент Rigidbody
@@ -30,23 +30,23 @@ namespace TestProject_Factura
             {
                 rb = GetComponent<Rigidbody>();
             }
-            
+
             // Зберігаємо початкову позицію для рестарту
             initialPosition = transform.position;
         }
-        
+
         private void Start()
         {
             // Ініціалізуємо HP
             currentHP = config.maxHP;
         }
-        
+
         private void OnEnable()
         {
             // Встановлюємо початкові значення
             currentHP = config.maxHP;
             IsMoving = false;
-            
+
             // Повертаємо автомобіль в початкову позицію
             if (rb != null)
             {
@@ -55,23 +55,23 @@ namespace TestProject_Factura
                 transform.position = initialPosition;
                 transform.rotation = Quaternion.identity;
             }
-            
+
             // Сповіщаємо UI про оновлення HP
             GameEvents.CarHPChanged(currentHP);
         }
-        
+
         private void FixedUpdate()
         {
             if (IsMoving && rb != null)
             {
                 // Отримуємо поточну позицію по X
                 var posX = transform.position.x;
-                
+
                 // Корегуємо поворот автомобіля, щоб він повертався до центру шляху (X = 0)
                 float steeringAngle = -posX * config.steeringFactor;
                 Quaternion targetRotation = Quaternion.Euler(0, steeringAngle, 0);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * config.returnSpeed);
-                
+
                 // Рухаємо автомобіль вперед з постійною швидкістю
                 rb.velocity = Vector3.MoveTowards(rb.velocity, transform.forward * config.moveSpeed, Time.fixedDeltaTime * config.moveSpeed);
             }
@@ -79,6 +79,7 @@ namespace TestProject_Factura
 
         public async UniTask StartMoving()
         {
+            GameStatistics.IncrementUniTaskCreated();
             if (IsMoving || rb == null)
                 return;
 
@@ -99,14 +100,14 @@ namespace TestProject_Factura
             // Встановлюємо кінцеву швидкість
             rb.velocity = transform.forward * config.moveSpeed;
         }
-        
+
         public void TakeDamage(float damage, Vector3 attackerPosition, float pushForce)
         {
             if (damage <= 0)
                 return;
-                
+
             currentHP = Mathf.Max(0, currentHP - damage);
-            
+
             // Apply push force to the car
             if (rb != null && pushForce > 0)
             {
@@ -117,10 +118,10 @@ namespace TestProject_Factura
                 // Apply force
                 rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
             }
-            
+
             // Notify UI about HP update
             GameEvents.CarHPChanged(currentHP);
-            
+
             // If HP is zero, notify about car destruction
             if (currentHP <= 0)
             {
@@ -128,14 +129,14 @@ namespace TestProject_Factura
                 GameEvents.CarDestroyed();
             }
         }
-        
+
         public void Stop()
         {
             if (!IsMoving || rb == null)
                 return;
-                
+
             IsMoving = false;
             rb.velocity = Vector3.zero;
         }
     }
-} 
+}

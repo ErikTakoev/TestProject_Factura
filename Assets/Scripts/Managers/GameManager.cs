@@ -67,8 +67,11 @@ namespace TestProject_Factura
 
         public async UniTask StartGame()
         {
+            GameStatistics.IncrementUniTaskCreated();
             if (currentState == GameState.Playing)
                 return;
+
+            GameStatistics.ResetStatistics();
 
             // Змінюємо стан на "гра"
             ChangeState(GameState.Playing);
