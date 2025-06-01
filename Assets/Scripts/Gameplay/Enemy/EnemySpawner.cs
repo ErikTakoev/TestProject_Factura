@@ -124,7 +124,7 @@ namespace TestProject_Factura
                 return;
             }
 
-            enemyPool = new ObjectPool<EnemyController>(enemyComponent, transform, 200, container);
+            enemyPool = new ObjectPool<EnemyController>(enemyComponent, transform, 20, container);
         }
     }
 }

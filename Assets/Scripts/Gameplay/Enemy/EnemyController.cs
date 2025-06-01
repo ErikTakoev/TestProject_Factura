@@ -13,11 +13,13 @@ namespace TestProject_Factura
         [SerializeField] private GameObject model;
         [SerializeField] private SphereCollider sphereCollider;
         [SerializeField] private float deathEffectDuration = 1.5f;
-        [SerializeField] private ParticleSystem hitEffect;
         [SerializeField] private ParticleSystem deathEffect;
         [SerializeField] private float rotationSpeed = 5f; // Швидкість обертання до цілі
         [SerializeField] private float sendToPoolIfBackward = -12f;
 
+        // Store original particle system settings
+        private ParticleSystem.MainModule originalDeathEffectMain;
+        private bool particleSystemsInitialized = false;
 
         // Компоненти
         private Rigidbody rb;
@@ -53,6 +55,13 @@ namespace TestProject_Factura
             if (animator == null)
             {
                 animator = GetComponent<Animator>();
+            }
+
+            // Store original particle system settings
+            if (deathEffect != null && !particleSystemsInitialized)
+            {
+                originalDeathEffectMain = deathEffect.main;
+                particleSystemsInitialized = true;
             }
         }
 
@@ -108,11 +117,30 @@ namespace TestProject_Factura
             currentState.Enter();
         }
 
+        // Reset particle systems to their original state
+        private void ResetParticleSystems()
+        {
+            if (deathEffect != null)
+            {
+                // Stop any ongoing particle effects
+                deathEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+                // Reset main module properties
+                var main = deathEffect.main;
+                main.gravityModifier = originalDeathEffectMain.gravityModifier;
+
+                // Reset any other modified properties as needed
+            }
+        }
+
         public void Initialize(Vector3 spawnPosition, ObjectPool<EnemyController> objectPool = null)
         {
             transform.position = spawnPosition;
             currentHP = config.maxHP;
             isActive = true;
+
+            // Reset particle systems to original state
+            ResetParticleSystems();
 
             // Встановлюємо посилання на пул
             if (objectPool != null)
@@ -174,11 +202,6 @@ namespace TestProject_Factura
 
             currentHP = Mathf.Max(0, currentHP - damage);
 
-            // Відтворюємо ефект влучання
-            if (hitEffect != null)
-            {
-                hitEffect.Play();
-            }
 
             // Якщо HP закінчилося, знищуємо ворога
             if (currentHP <= 0)
