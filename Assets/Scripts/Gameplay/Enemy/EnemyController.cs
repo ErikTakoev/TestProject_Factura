@@ -153,7 +153,7 @@ namespace TestProject_Factura
                 rb.isKinematic = false;
                 rb.velocity = Vector3.zero;
             }
-
+            model.transform.localEulerAngles = Vector3.zero;
             model.SetActive(true);
             sphereCollider.enabled = true;
 
