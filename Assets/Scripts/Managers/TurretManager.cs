@@ -5,7 +5,7 @@ using VContainer;
 
 namespace TestProject_Factura
 {
-    public class InputHandler : MonoBehaviour
+    public class TurretManager : MonoBehaviour
     {
         private ITurretController turretController;
         private InputManager inputManager;
@@ -65,12 +65,6 @@ namespace TestProject_Factura
                 isGameStarted = false;
                 inputManager?.DisableInput();
             }
-        }
-
-        public void StartGame()
-        {
-            isGameStarted = true;
-            inputManager?.EnableInput();
         }
     }
 }

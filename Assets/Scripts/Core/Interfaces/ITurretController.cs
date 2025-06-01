@@ -6,8 +6,8 @@ namespace TestProject_Factura
 {
     public interface ITurretController
     {
-        void UpdateRotation(Vector2 input);
+        void UpdateRotation(Vector3 worldPos);
         UniTask Shoot();
         bool CanShoot { get; }
     }
-} 
+}

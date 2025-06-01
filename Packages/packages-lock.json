@@ -16,6 +16,22 @@
       "dependencies": {},
       "hash": "f213ff497e4ff462a77319cf677cf20cc0860ca9"
     },
+    "com.expecto.aicontext": {
+      "version": "https://github.com/ErikTakoev/Unity-AI-Context.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c755a66d678d5dd4cb51d25ffe236b52dcaf2170"
+    },
+    "com.expecto.uml_genertor": {
+      "version": "https://github.com/ErikTakoev/unity-uml.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.expecto.aicontext": "0.1.0"
+      },
+      "hash": "80e13007a4a5adeb7c713bae8beda55285226fa1"
+    },
     "com.justinpbarnett.unity-mcp": {
       "version": "https://github.com/justinpbarnett/unity-mcp.git?path=/UnityMcpBridge",
       "depth": 0,

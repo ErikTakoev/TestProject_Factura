@@ -29,9 +29,6 @@ namespace TestProject_Factura
             // Для EnemyController використовуємо системний метод VContainer для ін'єкції у створені об'єкти
             builder.RegisterEntryPointExceptionHandler(ex => Debug.LogError($"VContainer Error: {ex.Message}"));
 
-            // Реєстрація фабрик і сервісів
-            RegisterFactories(builder);
-
             // Реєстрація систем і контролерів
             RegisterGameSystems(builder);
             RegisterControllers(builder);
@@ -42,19 +39,12 @@ namespace TestProject_Factura
             RegisterTest(builder);
         }
 
-        private void RegisterFactories(IContainerBuilder builder)
-        {
-            // Реєстрація фабрик
-            builder.Register<BulletFactory>(Lifetime.Singleton);
-            builder.Register<EnemyFactory>(Lifetime.Singleton);
-        }
-
         private void RegisterGameSystems(IContainerBuilder builder)
         {
             // Реєструємо ігрові системи
             builder.RegisterComponentInHierarchy<GameManager>().AsImplementedInterfaces().AsSelf();
             builder.RegisterComponentInHierarchy<EnemySpawner>().AsSelf();
-            builder.RegisterComponentInHierarchy<InputHandler>().AsSelf();
+            builder.RegisterComponentInHierarchy<TurretManager>().AsSelf();
             builder.RegisterComponentInHierarchy<LevelManager>().AsSelf();
         }
 

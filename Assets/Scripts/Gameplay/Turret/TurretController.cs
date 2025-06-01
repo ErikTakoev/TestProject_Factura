@@ -26,8 +26,6 @@ namespace TestProject_Factura
         private ObjectPool<Bullet> bulletPool;
         private float lastShootTime;
 
-        // Ссилка на InputManager
-        private InputManager inputManager;
 
         public bool CanShoot => Time.time - lastShootTime >= bulletConfig.shootCooldown;
 
@@ -35,7 +33,6 @@ namespace TestProject_Factura
         private void Construct(BulletConfig config, IObjectResolver resolver, InputManager inputMgr)
         {
             bulletConfig = config;
-            inputManager = inputMgr;
 
             bulletCount = config.bulletCount;
 
@@ -65,13 +62,10 @@ namespace TestProject_Factura
             GameEvents.BulletCountChanged(bulletCount);
         }
 
-        public void UpdateRotation(Vector2 inputPosition)
+        public void UpdateRotation(Vector3 worldPos)
         {
             if (turretPivot == null)
                 return;
-
-            // Використовуємо InputManager для отримання світової позиції
-            Vector3 worldPos = inputManager.GetWorldPosition();
 
             // Обчислюємо напрямок від турелі до цієї позиції
             Vector3 direction = worldPos - turretPivot.position;

@@ -12,7 +12,7 @@ namespace TestProject_Factura
         private ICarController carController;
         private ICameraController cameraController;
         private EnemySpawner enemySpawner;
-        private InputHandler inputHandler;
+        private TurretManager inputHandler;
 
         private float levelStartZ;
 
@@ -20,7 +20,7 @@ namespace TestProject_Factura
 
         [Inject]
         private void Construct(GameConfig config, ICarController car, ICameraController camera,
-                              EnemySpawner spawner, InputHandler input)
+                              EnemySpawner spawner, TurretManager input)
         {
             gameConfig = config;
             carController = car;
@@ -80,12 +80,6 @@ namespace TestProject_Factura
             if (cameraController != null && carController != null)
             {
                 await cameraController.SwitchToFollowMode(carController.Transform);
-            }
-
-            // Активуємо обробку вводу
-            if (inputHandler != null)
-            {
-                inputHandler.StartGame();
             }
 
             // Запускаємо рух автомобіля
