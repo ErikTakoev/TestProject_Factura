@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 6771528871888974396, guid: 958f003f84c06fe46b364b8e1270e635, type: 3}
-  levelLength: 1000
-  enemyCount: 1000
+  levelLength: 700
+  enemyCount: 2000
   bulletSpeed: 100
   bulletDamage: 25
-  shootCooldown: 0.05
-  spawnInterval: 0.02
-  enemySpawnRangeX: {x: -10, y: 10}
+  bulletLifetime: 0.4
+  bulletCount: 1000
+  shootCooldown: 0.02
+  spawnInterval: 0.03
+  enemySpawnRangeX: {x: -7, y: 7}
   enemySpawnRangeY: {x: 100, y: 200}

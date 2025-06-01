@@ -18,6 +18,7 @@ namespace TestProject_Factura
         [SerializeField] private float rotationSpeed = 5f; // Швидкість обертання до цілі
         [SerializeField] private float sendToPoolIfBackward = -12f;
 
+
         // Компоненти
         private Rigidbody rb;
 
@@ -211,15 +212,47 @@ namespace TestProject_Factura
 
             model.SetActive(false);
             sphereCollider.enabled = false;
-            // Відтворюємо ефект смерті
-            if (deathEffect != null)
+
+            // Start with current color
+            Color startColor = Color.red;
+
+            // Create random target color
+            Color endColor = new Color(
+                UnityEngine.Random.Range(0f, 1f),
+                UnityEngine.Random.Range(0f, 1f),
+                UnityEngine.Random.Range(0f, 1f),
+                startColor.a * 0.3f // Fade out
+            );
+
+            deathEffect.SetGradient(new GradientColorKey[] {
+                        new GradientColorKey(startColor, 0.3f),
+                        new GradientColorKey(endColor, 0.4f)
+                },
+                new GradientAlphaKey[] {
+                        new GradientAlphaKey(startColor.a, 0.3f),
+                        new GradientAlphaKey(endColor.a, 0.4f)
+                }
+            );
+
+
+            deathEffect.Simulate(1.5f, true, true, true);
+            deathEffect.Play();
+            await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
+
+            var main = deathEffect.main;
+            main.gravityModifier = 1f;
+            var particles = new ParticleSystem.Particle[deathEffect.main.maxParticles];
+            int count = deathEffect.GetParticles(particles);
+
+            for (int i = 0; i < count; i++)
             {
-                deathEffect.Simulate(1.5f, true, true, true);
-                deathEffect.Play();
-                await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
-                var main = deathEffect.main;
-                main.gravityModifier = 0.1f;
+                // Випадкова швидкість у всі боки
+                particles[i].velocity = UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(1f, 3f);
             }
+
+            deathEffect.SetParticles(particles, count);
+
+
 
 
 

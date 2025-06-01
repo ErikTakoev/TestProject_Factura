@@ -1,43 +1,41 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
-using Cysharp.Threading.Tasks;
 
 namespace TestProject_Factura
 {
     public class InputHandler : MonoBehaviour
     {
         private ITurretController turretController;
-        private ICameraController cameraController;
         private InputManager inputManager;
-        
+
         private bool isGameStarted = false;
-        
+
         [Inject]
-        private void Construct(ITurretController turret, ICameraController camera, InputManager input)
+        private void Construct(ITurretController turret, InputManager input)
         {
             turretController = turret;
-            cameraController = camera;
             inputManager = input;
         }
-        
+
         private void Start()
         {
             // Підписуємося на події зміни стану гри
             GameEvents.OnGameStateChanged += OnGameStateChanged;
         }
-        
+
         private void OnDestroy()
         {
             // Відписуємося від подій
             GameEvents.OnGameStateChanged -= OnGameStateChanged;
         }
-        
+
         private void Update()
         {
             if (!isGameStarted || inputManager == null)
                 return;
-                
+
             if (inputManager.IsInputActive)
             {
                 // Оновлюємо обертання турелі на основі позиції вводу
@@ -45,7 +43,7 @@ namespace TestProject_Factura
                 {
                     turretController.UpdateRotation(inputManager.GetWorldPosition());
                 }
-                
+
                 // Перевіряємо стрільбу
                 if (inputManager.IsShooting() && turretController != null && turretController.CanShoot)
                 {
@@ -53,7 +51,7 @@ namespace TestProject_Factura
                 }
             }
         }
-        
+
         private void OnGameStateChanged(GameState newState)
         {
             // Активуємо/деактивуємо обробку вводу в залежності від стану гри
@@ -68,9 +66,8 @@ namespace TestProject_Factura
                 inputManager?.DisableInput();
             }
         }
-        
-        // Метод для тестування запуску гри
-        public void TestStartGame()
+
+        public void StartGame()
         {
             isGameStarted = true;
             inputManager?.EnableInput();

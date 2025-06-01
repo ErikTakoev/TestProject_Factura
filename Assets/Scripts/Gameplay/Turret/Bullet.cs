@@ -11,7 +11,7 @@ namespace TestProject_Factura
         [SerializeField] private ParticleSystem hitEffect;
 
         private float damage;
-        private float lifetime = 1f;
+        private float lifetime = 0.4f;
         private float lifeTimer;
         private ObjectPool<Bullet> pool;
 
@@ -35,6 +35,18 @@ namespace TestProject_Factura
             // Скидаємо трейл, якщо він є
             if (trail != null)
             {
+                // Generate a random color
+                Color randomColor = new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+                Color random2Color = new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+
+                trail.SetGradient(new GradientColorKey[] {
+                        new GradientColorKey(randomColor, 0.0f),
+                        new GradientColorKey(random2Color, 1.0f)
+                    }, new GradientAlphaKey[] {
+                        new GradientAlphaKey(1.0f, 0.0f),
+                        new GradientAlphaKey(0.0f, 1.0f)
+                    });
+
                 trail.Clear();
                 trail.enabled = true;
             }

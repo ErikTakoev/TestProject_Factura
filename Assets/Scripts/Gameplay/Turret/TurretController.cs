@@ -16,9 +16,10 @@ namespace TestProject_Factura
         [SerializeField] private GameObject turretLight;
         [SerializeField] private Transform shootPoint;
         [SerializeField] private GameObject bulletPrefab;
-        [SerializeField] private ParticleSystem muzzleFlash;
-        [SerializeField] private AudioSource shootSound;
         [SerializeField] private Transform parentForBullets;
+        [SerializeField] private float bulletSpread = 50f; // Maximum bullet spread in degrees
+
+        private int bulletCount;
 
         private Camera mainCamera;
         private GameConfig gameConfig;
@@ -36,13 +37,15 @@ namespace TestProject_Factura
             gameConfig = config;
             inputManager = inputMgr;
 
+            bulletCount = config.bulletCount;
+
             // Ініціалізуємо пул куль за допомогою Resolve
             if (bulletPrefab != null)
             {
                 Bullet bulletComponent = bulletPrefab.GetComponent<Bullet>();
                 if (bulletComponent != null)
                 {
-                    bulletPool = new ObjectPool<Bullet>(bulletComponent, parentForBullets, 10, resolver);
+                    bulletPool = new ObjectPool<Bullet>(bulletComponent, parentForBullets, 1000, resolver);
                 }
                 else
                 {
@@ -58,6 +61,8 @@ namespace TestProject_Factura
         private void Start()
         {
             mainCamera = Camera.main;
+
+            GameEvents.BulletCountChanged(bulletCount);
         }
 
         public void UpdateRotation(Vector2 inputPosition)
@@ -93,28 +98,27 @@ namespace TestProject_Factura
 
             lastShootTime = Time.time;
 
-            // Відтворюємо ефект пострілу
-            if (muzzleFlash != null)
-            {
-                muzzleFlash.Play();
-            }
-
-            // Відтворюємо звук пострілу
-            if (shootSound != null)
-            {
-                shootSound.Play();
-            }
+            if (bulletCount <= 0)
+                return;
 
             // Створюємо кулю з пулу
             Bullet bullet = bulletPool.Get();
             if (bullet != null)
             {
+                bulletCount--;
+                GameEvents.BulletCountChanged(bulletCount);
+
                 turretLight.SetActive(true);
                 bullet.transform.position = shootPoint.position;
 
                 // Встановлюємо напрямок кулі у горизонтальній площині
                 Vector3 bulletDirection = turretPivot.forward;
                 bulletDirection.y = 0; // Обмежуємо рух тільки в горизонтальній площині
+
+                // Add random spread to bullet direction
+                float randomSpreadX = UnityEngine.Random.Range(-bulletSpread, bulletSpread);
+                bulletDirection = Quaternion.Euler(0, randomSpreadX, 0) * bulletDirection;
+
                 bulletDirection = bulletDirection.normalized; // Нормалізуємо вектор
 
                 // Встановлюємо обертання кулі відповідно до напрямку
