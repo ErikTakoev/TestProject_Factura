@@ -1,0 +1,6 @@
+[submodule "Expecto/unity-uml"]
+	path = Expecto/unity-uml
+	url = https://github.com/ErikTakoev/unity-uml.git
+[submodule "Expecto/Unity-AI-Context"]
+	path = Expecto/Unity-AI-Context
+	url = https://github.com/ErikTakoev/Unity-AI-Context.git
