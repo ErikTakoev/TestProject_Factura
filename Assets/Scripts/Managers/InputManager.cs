@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TestProject_Factura
 {
@@ -7,95 +8,68 @@ namespace TestProject_Factura
     {
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask groundLayerMask;
-        
-        private Vector2 currentInputPosition;
+
+        // Reference to the Input Actions asset
+        private GameplayControls gameplayControls;
+        private InputAction positionAction;
+        private InputAction shootAction;
+
         private bool isShooting;
         private bool isInputActive;
-        
+
         public bool IsInputActive => isInputActive;
-        
+
+        private void Awake()
+        {
+            // Initialize the Input Actions
+            gameplayControls = new GameplayControls();
+
+            // Get references to specific actions
+            positionAction = gameplayControls.Gameplay.Position;
+            shootAction = gameplayControls.Gameplay.Shoot;
+
+            // Set up callbacks
+            shootAction.performed += ctx => isShooting = ctx.ReadValueAsButton();
+            shootAction.canceled += ctx => isShooting = false;
+        }
+
         public void EnableInput()
         {
             isInputActive = true;
+            gameplayControls.Gameplay.Enable();
         }
-        
+
         public void DisableInput()
         {
             isInputActive = false;
             isShooting = false;
+            gameplayControls.Gameplay.Disable();
         }
-        
-        private void Start()
+
+        private void OnEnable()
         {
-            if (mainCamera == null)
+            // Enable the input actions when component is enabled
+            if (isInputActive)
             {
-                mainCamera = Camera.main;
+                gameplayControls.Gameplay.Enable();
             }
         }
-        
-        private void Update()
+
+        private void OnDisable()
         {
-            if (!isInputActive)
-                return;
-                
-            // Отримуємо дані про введення в залежності від платформи
-            ProcessInput();
+            // Disable the input actions when component is disabled
+            gameplayControls.Gameplay.Disable();
         }
-        
-        private void ProcessInput()
-        {
-            // Обробка введення для PC
-            if (Application.platform == RuntimePlatform.WindowsPlayer || 
-                Application.platform == RuntimePlatform.OSXPlayer || 
-                Application.platform == RuntimePlatform.LinuxPlayer || 
-                Application.isEditor)
-            {
-                ProcessMouseInput();
-            }
-            // Обробка введення для мобільних пристроїв
-            else if (Application.platform == RuntimePlatform.Android || 
-                    Application.platform == RuntimePlatform.IPhonePlayer)
-            {
-                ProcessTouchInput();
-            }
-        }
-        
-        private void ProcessMouseInput()
-        {
-            // Позиція миші в пікселях екрану
-            currentInputPosition = Input.mousePosition;
-            
-            // Перевіряємо натискання лівої кнопки миші для стрільби
-            isShooting = Input.GetMouseButton(0);
-        }
-        
-        private void ProcessTouchInput()
-        {
-            // За замовчуванням не стріляємо
-            isShooting = false;
-            
-            // Перевіряємо, чи є активні дотики
-            if (Input.touchCount > 0)
-            {
-                // Використовуємо перший дотик
-                Touch touch = Input.GetTouch(0);
-                
-                // Зберігаємо позицію дотику
-                currentInputPosition = touch.position;
-                
-                // Якщо дотик активний, стріляємо
-                isShooting = (touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled);
-            }
-        }
-        
+
         // Отримати поточну позицію введення у світових координатах
         public Vector3 GetWorldPosition()
         {
             if (mainCamera == null)
                 return Vector3.zero;
-                
+
+            var currentInputPosition = positionAction.ReadValue<Vector2>();
             Ray ray = mainCamera.ScreenPointToRay(currentInputPosition);
-            
+
             // Якщо вказано маску шару для землі, використовуємо її для визначення точки перетину
             if (groundLayerMask.value != 0)
             {
@@ -104,32 +78,13 @@ namespace TestProject_Factura
                     return hit.point;
                 }
             }
-            
-            // Якщо маска не вказана або перетин не знайдено, використовуємо плоску площину
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-            if (groundPlane.Raycast(ray, out float distance))
-            {
-                return ray.GetPoint(distance);
-            }
-            
             return Vector3.zero;
         }
-        
+
         // Перевірити, чи активна стрільба
         public bool IsShooting()
         {
             return isInputActive && isShooting;
         }
-        
-        // Отримати напрямок від поточної позиції камери до точки введення
-        public Vector3 GetDirectionFromCamera()
-        {
-            if (mainCamera == null)
-                return Vector3.forward;
-                
-            Vector3 worldPos = GetWorldPosition();
-            Vector3 direction = worldPos - mainCamera.transform.position;
-            return direction.normalized;
-        }
     }
-} 
+}
