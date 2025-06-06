@@ -5,13 +5,20 @@ using VContainer;
 
 namespace TestProject_Factura
 {
+    [Expecto.ContextCodeAnalyzer("GameManager - test context, test context 2, test context 3")]
     public class GameManager : MonoBehaviour, IGameManager
     {
+        [Expecto.ContextCodeAnalyzer("currentState - test context, test context 2, test context 3")]
         private GameState currentState = GameState.Menu;
+        [Expecto.ContextCodeAnalyzer("gameConfig - test context, test context 2, test context 3")]
         private GameConfig gameConfig;
+        [Expecto.ContextCodeAnalyzer("carController - test context, test context 2, test context 3")]
         private ICarController carController;
+        [Expecto.ContextCodeAnalyzer("cameraController - test context, test context 2, test context 3")]
         private ICameraController cameraController;
+        [Expecto.ContextCodeAnalyzer("enemySpawner - test context, test context 2, test context 3")]
         private EnemySpawner enemySpawner;
+        [Expecto.ContextCodeAnalyzer("inputHandler - test context, test context 2, test context 3")]
         private TurretManager inputHandler;
 
         private float levelStartZ;

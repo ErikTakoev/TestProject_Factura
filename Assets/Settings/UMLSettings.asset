@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UMLSettings
   m_EditorClassIdentifier: 
   pythonPath: python
-  generateUMLPath: C:/Projects/TestProject_Factura/Library/PackageCache/com.expecto.uml_genertor@80e13007a4/Python/generate_uml.py
+  generateUMLPath: C:/Projects/TestProject_Factura/Expecto/unity-uml/Python/generate_uml.py
   outputDirectory: C:/Projects/TestProject_Factura/UML
-  cleanupClasses: 0
-  cleanupAssociations: 0
+  cleanupClasses: 1
+  cleanupArrows: 1
